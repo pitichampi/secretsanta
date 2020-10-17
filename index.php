@@ -31,6 +31,13 @@ $members = array(
     "Player 10,player10@mail.com"
 );
 
+// On initialise l'instance de Mailgun et ses variables
+$mgkey = "";    // La clef privée de l'API mailgun
+$mgdomain="";   // Le domaine sur lequel mailgun est configuré
+require 'vendor/autoload.php';
+use Mailgun\Mailgun;
+$mg = Mailgun::create($mgkey);
+
 // Et maintenant notre liste de cibles...
 $targets = $members;
 
@@ -51,13 +58,10 @@ foreach ($members as $key=>$value){
 }
 
 // Et on envoie les mails :)
-require 'vendor/autoload.php';
-use Mailgun\Mailgun;
-$mg = Mailgun::create("clef de mailgun");
 
 foreach ($mails as $mail){
     echo "Envoi du mail à ". $mail["mail"]."\n";
-    $mg->messages()->send("domaine du compte mailgun", [
+    $mg->messages()->send($mgdomain, [
         "from"    => "noreply@domaine.com",
         "to"      => $mail["mail"],
         "subject" => "Ta cible pour le Secret Santa 2020 a été désignée !",
